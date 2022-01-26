@@ -12,6 +12,7 @@ public class ViewerUI : MonoBehaviour
 {
     private void OnEnable()
     {
+        var alwaysOnTop = GetComponent<AlwaysOnTop>();
         var doc = GetComponent<UIDocument>();
         var root = doc.rootVisualElement;
         var bg = root.Q("BG");
@@ -19,7 +20,8 @@ public class ViewerUI : MonoBehaviour
         var spoutDropdown = root.Q<DropdownField>("SpoutNames");
         var ndiDropdown = root.Q<DropdownField>("NdiNames");
         var scrollView = root.Q<ScrollView>();
-        var scaleToggle = root.Q<Toggle>();
+        var topMost = root.Q<Toggle>("TopMost");
+        var scaleToggle = root.Q<Toggle>("TexScale");
         var saveButton = root.Q<Button>();
 
         var spoutReceiver = GetComponent<SpoutReceiver>();
@@ -42,6 +44,7 @@ public class ViewerUI : MonoBehaviour
             ndiDropdown.choices = NdiFinder.sourceNames.ToList();
         });
 
+        topMost.RegisterValueChangedCallback(evt => alwaysOnTop.AssignTopmostWindow(Application.productName, evt.newValue));
         scaleToggle.RegisterValueChangedCallback(evt => scrollView.style.display = evt.newValue ? DisplayStyle.None : DisplayStyle.Flex);
         saveButton.clicked += SaveTexture;
 
